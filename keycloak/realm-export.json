@@ -1,0 +1,203 @@
+{
+  "realm": "smartloan",
+  "enabled": true,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "passwordPolicy": "length(10) and digits(1)",
+  "accessTokenLifespan": 300,
+  "roles": {
+    "realm": [
+      { "name": "borrower", "description": "Semua karyawan - mengajukan dan mengelola pinjaman sendiri" },
+      { "name": "staff", "description": "Staf gudang/GA cabang - approve, reject, handover, return" },
+      {
+        "name": "branch_manager",
+        "description": "Manajer cabang - semua hak staff + CRUD aset cabangnya",
+        "composite": true,
+        "composites": {
+          "realm": ["staff"]
+        }
+      },
+      { "name": "superadmin", "description": "Admin pusat - lintas cabang + kelola user" }
+    ]
+  },
+  "groups": [
+    {
+      "name": "branches",
+      "subGroups": [
+        {
+          "name": "jakarta",
+          "attributes": { "branch_code": ["jakarta"] }
+        },
+        {
+          "name": "surabaya",
+          "attributes": { "branch_code": ["surabaya"] }
+        },
+        {
+          "name": "malang",
+          "attributes": { "branch_code": ["malang"] }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "smartloan-web",
+      "name": "SmartLoan Web",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "implicitFlowEnabled": false,
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "https://oauth.pstmn.io/v1/callback",
+        "http://localhost/*"
+      ],
+      "webOrigins": ["*"]
+    },
+    {
+      "clientId": "smartloan-api",
+      "name": "SmartLoan API",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "secret": "smartloan-api-secret",
+      "protocolMappers": [
+        {
+          "name": "audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "smartloan-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "branch-code-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "branch_code",
+            "claim.name": "branch_code",
+            "jsonType.label": "String",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false",
+            "aggregate.attrs": "true",
+            "multivalued": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "smartloan-admin-svc",
+      "name": "SmartLoan Admin Service Account",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "secret": "smartloan-admin-svc-secret",
+      "fullScopeAllowed": false
+    }
+  ],
+  "clientScopeMappings": {
+    "realm-management": [
+      {
+        "client": "smartloan-admin-svc",
+        "roles": ["view-users", "manage-users"]
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "sari",
+      "email": "sari@smartloan.test",
+      "firstName": "Sari",
+      "lastName": "Wulandari",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["superadmin"]
+    },
+    {
+      "username": "budi",
+      "email": "budi@smartloan.test",
+      "firstName": "Budi",
+      "lastName": "Santoso",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["branch_manager"],
+      "groups": ["jakarta"]
+    },
+    {
+      "username": "rina",
+      "email": "rina@smartloan.test",
+      "firstName": "Rina",
+      "lastName": "Putri",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["borrower", "staff"],
+      "groups": ["jakarta"]
+    },
+    {
+      "username": "tono",
+      "email": "tono@smartloan.test",
+      "firstName": "Tono",
+      "lastName": "Hartono",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["borrower", "staff"],
+      "groups": ["surabaya"]
+    },
+    {
+      "username": "andi",
+      "email": "andi@smartloan.test",
+      "firstName": "Andi",
+      "lastName": "Pratama",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["borrower"],
+      "groups": ["jakarta"]
+    },
+    {
+      "username": "dewi",
+      "email": "dewi@smartloan.test",
+      "firstName": "Dewi",
+      "lastName": "Lestari",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["borrower"],
+      "groups": ["surabaya"]
+    },
+    {
+      "username": "eko",
+      "email": "eko@smartloan.test",
+      "firstName": "Eko",
+      "lastName": "Nugroho",
+      "enabled": false,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Password123", "temporary": false }],
+      "realmRoles": ["borrower"],
+      "groups": ["jakarta"]
+    }
+  ]
+}
