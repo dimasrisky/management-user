@@ -19,7 +19,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('smart-loan API')
+    .setTitle('User Management API')
     .setDescription('This is description of the smart-loan API')
     .setVersion('1.0.0')
     .addBearerAuth()

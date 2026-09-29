@@ -26,12 +26,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload): IJwtPayload {
-    console.log(payload);
-    // becomes req.user
     return {
       userId: payload.sub,
       email: payload.email,
-      roles: payload.realm_access?.roles ?? [],
+      roles: payload.resource_access.account?.roles ?? [],
       groups: payload.groups ?? [],
     };
   }

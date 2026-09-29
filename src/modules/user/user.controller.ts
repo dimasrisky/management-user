@@ -28,6 +28,7 @@ import { SyncUserDto } from './dto/sync-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { Public } from 'src/common/decorators/public.decorator';
+import { Groups } from 'src/common/decorators/groups.decorator';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 
 @Controller('user')
@@ -37,6 +38,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Groups('admin')
   @CreateSwaggerExample(
     CreateUserDto,
     ResponseUserDto,
@@ -57,6 +59,7 @@ export class UserController {
   }
 
   @Get()
+  @Groups('admin')
   @ListSwaggerExample(ResponseUserDto, 'Mengambil Banyak Data User')
   async findAndCount(
     @Query() queryParameterDto: FilteringUserDto,
@@ -86,6 +89,7 @@ export class UserController {
   }
 
   @Get(':id')
+  @Groups('admin')
   @DetailSwaggerExample(ResponseUserDto, 'Mengambil Data User dengan ID')
   async findOne(
     @Param() pathParamater: PathParameterDto,
@@ -100,6 +104,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @Groups('admin')
   @DetailSwaggerExample(ResponseUserDto, 'Mengupdate Data User By Id')
   async update(
     @Param() pathParamater: PathParameterDto,
@@ -120,6 +125,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Groups('admin')
   @HttpCode(204)
   @DeleteSwaggerExample('Menghapus Data User dengan Id')
   async remove(
