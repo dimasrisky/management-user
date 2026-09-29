@@ -3,4 +3,5 @@ export interface IJwtPayload {
   email?: string;
   roles: string[];
   branchCode?: string;
+  groups: string[];
 }

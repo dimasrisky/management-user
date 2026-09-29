@@ -28,6 +28,7 @@ import { SyncUserDto } from './dto/sync-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { Public } from 'src/common/decorators/public.decorator';
+import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 
 @Controller('user')
 @ApiTags('User')
@@ -74,6 +75,14 @@ export class UserController {
         totalData: total,
       },
     };
+  }
+
+  @Get('me')
+  @DetailSwaggerExample(ResponseUserDto, 'Mengambil Data User yang Login')
+  async me(
+    @Request() req: ExpressRequest,
+  ): Promise<BaseSuccessResponse<IJwtPayload>> {
+    return { data: req.user as IJwtPayload };
   }
 
   @Get(':id')

@@ -25,18 +25,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: {
-    sub: string;
-    email?: string;
-    realm_access?: { roles: string[] };
-    branch_code?: string;
-  }): IJwtPayload {
+  validate(payload): IJwtPayload {
+    console.log(payload);
     // becomes req.user
     return {
       userId: payload.sub,
       email: payload.email,
       roles: payload.realm_access?.roles ?? [],
-      branchCode: payload.branch_code,
+      groups: payload.groups ?? [],
     };
   }
 }
