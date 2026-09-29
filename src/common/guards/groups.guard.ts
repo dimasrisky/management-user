@@ -9,26 +9,24 @@ export class GroupsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(ctx: ExecutionContext): boolean {
-    const allowedBranchCodes = this.reflector.getAllAndOverride<string[]>(
+    const allowedGroups = this.reflector.getAllAndOverride<string[]>(
       GROUPS_KEY,
       [ctx.getHandler(), ctx.getClass()],
     );
 
-    if (!allowedBranchCodes || allowedBranchCodes.length === 0) {
+    if (!allowedGroups || allowedGroups.length === 0) {
       return true;
     }
 
     const request = ctx.switchToHttp().getRequest<Request>();
     const user = request.user;
 
-    // SUPER_ADMIN has no branch and scopes across all branches.
-    if (user?.roles.includes('superadmin')) {
-      return true;
-    }
+    const userGroups = user?.groups ?? [];
+    const isMember = allowedGroups.some((group) => userGroups.includes(group));
 
-    if (!user?.branchCode || !allowedBranchCodes.includes(user.branchCode)) {
+    if (!isMember) {
       throw new ForbiddenException(
-        `Requires membership in one of these branches: ${allowedBranchCodes.join(', ')}.`,
+        `Requires membership in one of these groups: ${allowedGroups.join(', ')}.`,
       );
     }
 

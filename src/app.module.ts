@@ -6,6 +6,7 @@ import { AllExceptionFilter } from './common/bases/exceptions/base.exception';
 import { typeOrmConfig } from './database/database';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { BookModule } from './modules/book/book.module';
 import { ConfigModule } from './config/config.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { ConfigModule } from './config/config.module';
     }),
     AuthModule,
     UserModule,
+    BookModule,
   ],
   controllers: [],
   providers: [

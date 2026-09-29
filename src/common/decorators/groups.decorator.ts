@@ -1,6 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
 
 export const GROUPS_KEY = 'groups';
-/** Restrict an endpoint to specific branch groups (e.g. 'JKT', 'SBY'). SUPER_ADMIN always bypasses. */
-export const Groups = (...branchCodes: string[]) =>
-  SetMetadata(GROUPS_KEY, branchCodes);
+/** Restrict an endpoint to specific Keycloak groups (e.g. 'admin', 'visitor'). */
+export const Groups = (...groups: string[]) => SetMetadata(GROUPS_KEY, groups);
