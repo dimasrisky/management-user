@@ -14,13 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksUri: config.getOrThrow<string>('JWKS_URI'),
         cache: true,
         cacheMaxEntries: 5,
-        cacheMaxAge: 10 * 60 * 1000, // 10 min
+        cacheMaxAge: 10 * 60 * 1000,
         rateLimit: true,
         jwksRequestsPerMinute: 10,
       }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       issuer: config.getOrThrow<string>('JWT_ISSUER'),
-      audience: config.get<string>('JWT_AUDIENCE'),
       algorithms: ['RS256'],
       jsonWebTokenOptions: { clockTolerance: 30 }, // seconds
     });

@@ -7,7 +7,6 @@ import { UserRepository } from './user.repository';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import { BranchRepository } from '../branch/branch.repository';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 
 @Injectable()
@@ -19,7 +18,6 @@ export class UserService extends BaseService<
   private readonly keycloakClient: KeycloakAdminClient;
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly branchRepository: BranchRepository,
     keycloakAdminService: KeycloakAdminService,
   ) {
     super(userRepository);
@@ -79,26 +77,16 @@ export class UserService extends BaseService<
 
   async sync() {
     const users: UserRepresentation[] = await this.keycloakClient.users.find();
-    const branches = await this.branchRepository.find();
     const savedUsers: User[] = [];
-    const existingUsers = await this.userRepository.find({
-      where: {},
-      relations: { branch: true },
-    });
+    const existingUsers = await this.userRepository.find({ where: {} });
 
     for (const user of users) {
-      const userGroups = await this.keycloakClient.users.listGroups({
-        id: user.id!,
-      });
-      const branch = branches.find((b) => b.name === userGroups[0]?.name);
-
       const isExist = existingUsers.find((us) => us.keycloakId === user.id);
       if (isExist) {
         isExist.firstName = user.firstName!;
         isExist.lastName = user.lastName!;
         isExist.isActive = user.enabled!;
         isExist.email = user.email!;
-        if (branch) isExist.branch = branch;
         savedUsers.push(isExist);
         continue;
       }
@@ -109,7 +97,6 @@ export class UserService extends BaseService<
         lastName: user.lastName,
         isActive: user.enabled,
         email: user.email,
-        branch,
       });
       savedUsers.push(createUser);
     }

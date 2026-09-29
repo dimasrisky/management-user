@@ -5,7 +5,6 @@ import { BaseValidationPipe } from './common/bases/base.validation';
 import { AllExceptionFilter } from './common/bases/exceptions/base.exception';
 import { typeOrmConfig } from './database/database';
 import { AuthModule } from './modules/auth/auth.module';
-import { BranchModule } from './modules/branch/branch.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from './config/config.module';
 
@@ -17,7 +16,6 @@ import { ConfigModule } from './config/config.module';
       inject: [],
     }),
     AuthModule,
-    BranchModule,
     UserModule,
   ],
   controllers: [],

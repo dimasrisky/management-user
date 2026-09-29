@@ -1,7 +1,6 @@
 import { BaseEntity } from 'src/common/bases/base.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
-import { Branch } from 'src/modules/branch/entities/branch.entity';
 
 @Entity()
 export class User extends BaseEntity implements IUser {
@@ -19,7 +18,4 @@ export class User extends BaseEntity implements IUser {
 
   @Column({ name: 'is_active', unique: false, nullable: false })
   isActive: boolean;
-
-  @ManyToOne(() => Branch, (branch) => branch.users, { onDelete: 'CASCADE' })
-  branch: Branch;
 }
